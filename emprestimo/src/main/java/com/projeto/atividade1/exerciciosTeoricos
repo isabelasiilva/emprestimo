@@ -1,0 +1,62 @@
+O que é uma API REST? Pra que ela serve?
+    É uma interface de comunicação que permite que dois sistemas diferentes troquem dados pela web usando o protocolo HTTP. Ela serve para expor as regras de negócio e os dados de um sistema seguindo um padrão seguro..
+
+Qual a diferença entre GET, POST, PUT e DELETE? Dê um exemplo de cada.
+    GET serve para leitura: busca dados sem alterar nada no servidor. Exemplo: GET /equipamentos (lista todos) ou GET /equipamentos/1 (busca o equipamento de ID 1).
+
+    POST serve para criação: envia dados novos para serem criados no servidor. Exemplo: POST /equipamentos enviando um JSON com nome e outros dados desse novo equipamento.
+
+    PUT é usado para atualização: substitui ou atualiza completamente um dado existente. Exemplo: PUT /equipamentos/1 atualizará os dados do equipamento 1.
+
+    DELETE é para remoção: apaga um registro específico. Exemplo: DELETE /equipamentos/1 vai remover o equipamento 1.
+
+O que significam os status 200, 201, 400, 404 e 409?
+    São códigos de resposta HTTP como retorno do servidor, avisam ao cliente o resultado do pedido.
+    200 OK: deu tudo certo com sua requisição.
+    201 Created: deu certo e um novo recurso foi criado no servidor (geralmente para POST).
+    400 Bad Request: O cliente mandou dados inválidos ou malformados (Ex: campo obrigatório vazio, JSON quebrado).
+    404 Not Found: O recurso ou a rota solicitada não existe (ex: buscar o equipamento de ID = 999 que não está no banco).
+    409 Conflict: O pedido está bem formatado, mas entra em conflito com o estado atual do sistema (ex: tentar cadastrar um número de patrimônio que já existe).
+
+O que é JSON?
+    É um formato de texto usado para estruturar e transportar dados entre cliente e servidor, organizado em pares de chave e valor.
+
+Qual a função de cada camada: Controller, Service e Repository?
+    Controller: é a porta de entrada, faz o meio de campo entre requisição e servidor. Recebe a requisição HTTP, valida os dados de entrada, chama a camada de serviço e devolve a resposta HTTP (com status code e JSON). Não deve conter regras de negócio.
+
+    Service: é o cérebro da aplicação. Contém as regras de negócio, cálculos, verificações (ex: "não permitir patrimônio duplicado") e coordena as chamadas aos repositórios.
+
+    Repository: é a camada de acesso aos dados. Faz a conexão com o banco de dados (executa SELECT, INSERT, UPDATE, DELETE).
+
+O que a anotação @Entity faz?
+    Ela informa ao JPA que aquela classe Java representa uma tabela no banco de dados.
+
+Por que o repository é uma interface, e quem escreve o código dele?
+    Porque no Spring Data JPA você só estende JpaRepository na sua interface, não precisa declarar como fazer porque já vem estruturas para você reutilizar.
+
+O que é validar? O que o @Valid faz?
+    Validar é garantir que os dados recebidos cumprem os requisitos passados antes de serem processados, como não ser nulo, ter tamanho mínimo, formato de e-mail válido. A anotação @Valid é usada para validar dados, garantindo que as regras declaradas nas entidades sejam respeitadas antes de processar a informação.
+
+Como um JSON vira uma linha no banco de dados? Descreva o caminho, do Postman até a tabela.
+    No postman, enviamos uma requisição POST com o JSON no body, no Spring, o Jackson reqce a requisição e faz a desserialização desse texto para um objeto. O controller recebe o objeto, passa pelo @Valid e manda para o service. No service, aplica as regras de negocio e chama o repository. O repository faz o comando sql para fazer o insert desse objeto no banco.
+
+E o caminho contrário: num GET /equipamentos/1, como uma linha do banco vira o JSON que aparece no Postman?
+    O controller recebe uma requisição GET, chama o service para validar, que por sua vez chama o repository, o qual fará um select da requisição feita. Se for um get genérico, trará uma lista, se for um get de ID trará o resultado somente daquele ID. O banco devolve os dados, o hibernate transforma isso em um objeto java e preenche os atributos com os seu respectivos valores. O controller recebe esse objeto para expor de volta, o Jackson faz a serialização desse objeto e JSON para mostrar ao usuário.
+
+Quando o Postman manda um POST /equipamentos/cadastrar, como o Spring sabe qual método de qual controller chamar?
+O @Valid barrou o pedido. O Service ficou sabendo? E o banco?
+    Ao iniciar a aplicação, o Spring escaneia todas as classes anotadas com @RestController e mapeia todas as rotas definidas em @RequestMapping, @PostMapping, @GetMapping, etc., por isso possui um roteamento ao inicializar. Quando a requisição chega, o Spring olha o verbo HTTP (POST) e a URL (/equipamentos/cadastrar), consulta esse roteamento interna e invoca exatamente o método correspondente.
+
+    Quando o @Valid barra um pedido nem o service e nem o banco ficam sabendo. A validação acontece na porta do Controller, antes mesmo da primeira linha de código do método do Controller ser executada. Quando o @Valid falha, o Spring interrompe o fluxo imediatamente, lança uma exceção e devolve um erro 400 direto para o cliente, economizando processamento e protegendo o banco.
+
+Qual a diferença entre o @NotBlank na entidade e o nullable = false no @Column? Se os dois barram o mesmo nome vazio, por que ter os dois?
+    O @NotBlank impede que salve strings vazias ou preenchidas só com espaços, o nullable = false cria uma restrição de NOT NULL. Ter os dois é uma boa prática porque eles cumprem papéis diferentes, o @NotBlank valida os inputs do usuário logo no inicio e o nullable valida só quando um valor NULL chega no banco.
+
+Ontem os dados sumiam quando o servidor reiniciava, e hoje não somem mais. O que mudou, e onde?
+    Mudou a configuração do banco de dados, se estava usando um banco em memória (como o H2) que roda na memória RAM, ou seja ele apaga tudo ao desligar. Se a configuração mudou para um banco que persiste dados em disco e ajustou o ddl, os dados serão mantidos gravados fisicamente no disco.
+
+Quem cria as tabelas no banco? Em algum momento a gente escreveu CREATE TABLE? Como isso acontece?
+    Quem cria as tabelas é o Hibernate (a implementação do JPA usada pelo Spring). Não precisamos escrever CREATE TABLE se deixarmos configurada a propriedade spring.jpa.hibernate.ddl-auto=update (ou create). Assim, quando o Spring inicia, o Hibernate lê todas as classes anotadas com @Entity, inspeciona seus atributos e gera automaticamente os comandos CREATE TABLE e ALTER TABLE no banco conectado.
+
+O nome existsByPatrimonio é só um nome, e ninguém escreveu o código dele. Como o Spring sabe o que esse método tem que fazer?
+    Isso se chama Query Methods do Spring Data JPA. O Spring possui um analisador sintático que quebra o nome do método em palavras-chave pré-definidas. O existsBy diz ao Spring para montar uma consulta booleana de verificação de existência do nome que você passar em seguida.
