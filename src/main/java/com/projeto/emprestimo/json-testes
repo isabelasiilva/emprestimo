@@ -1,20 +1,17 @@
 //POST/equipamentos
 {
-    "disponivel": true,
     "nome": "Notebook Apple",
     "patrimonio": "P1020",
     "tipo": "NOTEBOOK"
 }
 
 {
-    "disponivel": true,
     "nome": "Notebook Dell",
     "patrimonio": "P1030",
     "tipo": "NOTEBOOK"
 }
 
 {
-    "disponivel": true,
     "nome": "Notebook Positivo",
     "patrimonio": "P1050",
     "tipo": "NOTEBOOK"
@@ -24,10 +21,11 @@
 {
   "nome": "Ana",
   "email": "ana@empresa.com",
-  "cep": "40729963",
-  "numero": "21",
-  "logradouro": "Rua Narizinho",
-  "bairro": "Sitio do Pica Pau Amarelo",
-  "cidade": "Taubate",
-  "uf": "SP"
+  "cargo": "desenvolvedora"
+}
+
+{
+  "nome": "Rafaela",
+  "email": "rafaela@empresa.com",
+  "cargo": "gerente"
 }
