@@ -14,18 +14,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/equipamentos")
 public class EquipamentoController {
+
     private final EquipamentoService service;
+
     public EquipamentoController(EquipamentoService service) {
         this.service = service; // fazendo uma injeção de dependencia, declara uma variavel e passa no construtor
     }
 
     // faz uma requisição para listar todos os equipamentos, mas você pode passar um filtro não obrigatorio (por causa do required false), por ex "tipo",
-    @GetMapping
-    public List<Equipamento> listar(
-            @RequestParam(required = false)
-            TipoEquipamento tipo) {
-        return service.listar(tipo);
-    }
+//    @GetMapping
+//    public List<Equipamento> listar(
+//            @RequestParam(required = false)
+//            TipoEquipamento tipo) {
+//        return service.listar(tipo);
+//    }
 
     @GetMapping
     public List<Equipamento> listar(
