@@ -97,5 +97,13 @@ public class Colaborador {
     public void setUf(String uf) {
         this.uf = uf;
     }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
 }
 

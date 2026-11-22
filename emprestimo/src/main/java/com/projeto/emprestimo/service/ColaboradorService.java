@@ -1,5 +1,6 @@
 package com.projeto.emprestimo.service;
 
+import com.projeto.emprestimo.dto.ColaboradorRequest;
 import com.projeto.emprestimo.exception.ConflitoException;
 import com.projeto.emprestimo.exception.NaoEncontradoException;
 import com.projeto.emprestimo.model.Colaborador;
@@ -23,11 +24,21 @@ public class ColaboradorService {
         return repository.findById(id).orElseThrow(() -> new NaoEncontradoException("Colaborador não encontrado"));
     }
 
-    public Colaborador cadastrar(Colaborador colaborador) {
-        if (repository.existsByEmail(colaborador.getEmail())) {
+    public Colaborador cadastrar(ColaboradorRequest colaborador) {
+        if (repository.existsByEmail(colaborador.email())) {
             throw new ConflitoException("E-mail já cadastrado");
         }
+        Colaborador novoColaborador = new Colaborador();
+        novoColaborador.setNome(colaborador.nome());
+        novoColaborador.setEmail(colaborador.email());
+        novoColaborador.setNumero(colaborador.numero());
+        novoColaborador.setLogradouro(colaborador.logradouro());
+        novoColaborador.setBairro(colaborador.bairro());
+        novoColaborador.setCidade(colaborador.cidade());
+        novoColaborador.setUf(colaborador.uf());
+        novoColaborador.setCep(colaborador.cep());
+
 // quarta-feira: aqui entra a busca do endereço no ViaCEP
-        return repository.save(colaborador);
+        return repository.save(novoColaborador);
     }
 }
