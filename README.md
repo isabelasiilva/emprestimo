@@ -107,3 +107,4 @@ A comunicação com o backend usa o arquivo `view/src/api.js`. Em desenvolviment
 - Backend: `https://emprestimo-ygbw.onrender.com/`
 
 # Video de apresentação apresentação
+`https://www.youtube.com/watch?v=NYSPxp3YzsU`
