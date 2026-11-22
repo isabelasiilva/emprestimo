@@ -1,0 +1,20 @@
+{
+    "disponivel": true,
+    "nome": "Notebook Apple",
+    "patrimonio": "P1020",
+    "tipo": "NOTEBOOK"
+}
+
+{
+    "disponivel": true,
+    "nome": "Notebook Dell",
+    "patrimonio": "P1030",
+    "tipo": "NOTEBOOK"
+}
+
+{
+    "disponivel": true,
+    "nome": "Notebook Positivo",
+    "patrimonio": "P1050",
+    "tipo": "NOTEBOOK"
+}
