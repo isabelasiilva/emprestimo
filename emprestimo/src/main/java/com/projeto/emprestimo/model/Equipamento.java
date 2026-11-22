@@ -18,14 +18,14 @@ public class Equipamento {
     private String nome;
 
     @NotNull(message = "O tipo é obrigatório!")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) // como enum é guardado no banco
     @Column(nullable = false)
     private TipoEquipamento tipo;
 
     @Column(nullable = false)
     private boolean disponivel = true;
 
-    public Equipamento() { }
+    public Equipamento() { } // obrigatorio pra rodar
 
     public Long getId() {
         return id;
