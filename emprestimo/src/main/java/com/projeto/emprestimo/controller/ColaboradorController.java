@@ -1,5 +1,6 @@
 package com.projeto.emprestimo.controller;
 
+import com.projeto.emprestimo.dto.ColaboradorRequest;
 import com.projeto.emprestimo.model.Colaborador;
 import com.projeto.emprestimo.model.Emprestimo;
 import com.projeto.emprestimo.service.ColaboradorService;
@@ -34,7 +35,7 @@ public class ColaboradorController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Colaborador cadastrar(@RequestBody @Valid Colaborador colaborador) {
+    public Colaborador cadastrar(@RequestBody @Valid ColaboradorRequest colaborador) {
         return service.cadastrar(colaborador);
     }
 

@@ -44,6 +44,7 @@ public class EmprestimoService {
             throw new ConflitoException("Equipamento indisponível");
         }
         equipamento.setDisponivel(false);
+
         Emprestimo emprestimo = new Emprestimo();
         emprestimo.setEquipamento(equipamento);
         emprestimo.setColaborador(colaborador);

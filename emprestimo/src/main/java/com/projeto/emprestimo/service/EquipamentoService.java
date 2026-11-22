@@ -1,14 +1,14 @@
 package com.projeto.emprestimo.service;
 
+import com.projeto.emprestimo.dto.EquipamentoRequest;
 import com.projeto.emprestimo.exception.ConflitoException;
 import com.projeto.emprestimo.exception.NaoEncontradoException;
 import com.projeto.emprestimo.model.Equipamento;
 import com.projeto.emprestimo.model.TipoEquipamento;
 import com.projeto.emprestimo.repository.EmprestimoRepository;
 import com.projeto.emprestimo.repository.EquipamentoRepository;
-import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -52,19 +52,22 @@ public class EquipamentoService {
     }
 
     // cadastra com regra, recebe um objeto e retorna um objeto (pronto pra salvar no banco)
-    public Equipamento cadastrar(Equipamento equipamento) {
-        if (repository.existsByPatrimonio(equipamento.getPatrimonio())) { // se o equipamento ja existe nao vai atualizar, vai lançar a exceção
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Patrimônio já cadastrado");
+    public Equipamento cadastrar(EquipamentoRequest dados) {
+        if (repository.existsByPatrimonio(dados.patrimonio())) {
+            throw new ConflitoException("Patrimônio já cadastrado");
         }
-        equipamento.setDisponivel(true);  // todo equipamento novo nasce disponível
-        return repository.save(equipamento); // faz um insert no banco de dados
+        Equipamento equipamento = new Equipamento();
+        equipamento.setPatrimonio(dados.patrimonio());
+        equipamento.setNome(dados.nome());
+        equipamento.setTipo(dados.tipo());
+        return repository.save(equipamento); // nasce disponível: o DTO nem tem o campo // faz um insert no banco de dados
     }
 
-    public Equipamento atualizar(Long id, Equipamento dados) {
+    public Equipamento atualizar(Long id, @Valid EquipamentoRequest dados) {
         Equipamento equipamento = buscar(id); // 404 se nao existir
-        equipamento.setNome(dados.getNome());
-        equipamento.setTipo(dados.getTipo());
+        equipamento.setPatrimonio(dados.patrimonio());
+        equipamento.setNome(dados.nome());
+        equipamento.setTipo(dados.tipo());
 
         return repository.save(equipamento);
     }
